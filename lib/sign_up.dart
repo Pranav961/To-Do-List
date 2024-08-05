@@ -15,6 +15,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
+  Future<void> signUp() async {
+    print("start login api call");
+    http.Response response = await http.post(
+        Uri.parse("https://todolist-1ldm.onrender.com/api/auth/signup"),
+        body: {
+          "username": usernameController.text,
+          "password": passwordController.text,
+          "confirmPassword": confirmPasswordController.text,
+          "email": emailController.text
+        });
+    print("Response status code == ${response.statusCode}");
+    print("Response body == ${response.body}");
+    if (response.statusCode == 200) {
+      Navigator.pop(context);
+    } else {
+      final snackBar = SnackBar(
+        content: Text("Error: ${response.body}"),
+        duration: const Duration(seconds: 3),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,6 +99,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         const BorderSide(width: 0.5, color: Color(0xFFB9B9B9)),
                     borderRadius: BorderRadius.circular(30)),
               ),
+              obscureText: true,
             ),
           ),
           Padding(
@@ -93,6 +117,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         const BorderSide(width: 0.5, color: Color(0xFFB9B9B9)),
                     borderRadius: BorderRadius.circular(30)),
               ),
+              obscureText: true,
             ),
           ),
           Container(
@@ -112,27 +137,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   );
                   return;
                 }
-                print("start login api call");
-                http.Response response = await http.post(
-                    Uri.parse(
-                        "https://todolist-1ldm.onrender.com/api/auth/signup"),
-                    body: {
-                      "username": usernameController.text,
-                      "password": passwordController.text,
-                      "confirmPassword": confirmPasswordController.text,
-                      "email": emailController.text
-                    });
-                print("Response status code == ${response.statusCode}");
-                print("Response body == ${response.body}");
-                if (response.statusCode == 200) {
-                  Navigator.pop(context);
-                } else {
-                  final snackBar = SnackBar(
-                    content: Text("Error: ${response.body}"),
-                    duration: const Duration(seconds: 3),
+                if (passwordController.text != confirmPasswordController.text) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Passwords do not match"),
+                    ),
                   );
-                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  return;
                 }
+                signUp();
               },
               child: const Padding(
                 padding: EdgeInsets.only(top: 15, bottom: 11),
