@@ -162,16 +162,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void getAllTask() async {
-    print("start getAllTask api call");
+    log("start getAllTask api call");
     showLoadingDialog(context);
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var accessToken = preferences.getString("token");
     http.Response response = await http.get(Uri.parse("$url/api/tasks/"),
         headers: {"x-access-token": accessToken!});
 
-    print("getAllTask Response status code == ${response.statusCode}");
+    log("getAllTask Response status code == ${response.statusCode}");
     hideLoadingDialog(context);
-    print("getAllTask Response body == ${response.body}");
+    log("getAllTask Response body == ${response.body}");
 
     if (response.statusCode == 200) {
       var res = jsonDecode(response.body);
@@ -189,12 +189,12 @@ class _HomeScreenState extends State<HomeScreen> {
         (route) => false,
       );
     } else {
-      print("Failed to load tasks");
+      log("Failed to load tasks");
     }
   }
 
   void addTask(String taskDescription) async {
-    print("--------------Adding task with description: $taskDescription");
+    log("--------------Adding task with description: $taskDescription");
     showLoadingDialog(context);
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var accessToken = preferences.getString("token");
@@ -235,18 +235,18 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void deleteTask(id) async {
-    print("=================start deleteTask api call");
-    print("--------------$id");
+    log("=================start deleteTask api call");
+    log("--------------$id");
     showLoadingDialog(context);
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var accessToken = preferences.getString("token");
     http.Response response = await http.delete(Uri.parse("$url/api/tasks/$id"),
         headers: {"x-access-token": accessToken!});
-    print("getAllTask Response status code == ${response.statusCode}");
-    print("getAllTask Response body == ${response.body}");
+    log("getAllTask Response status code == ${response.statusCode}");
+    log("getAllTask Response body == ${response.body}");
     /*var res = jsonDecode(response.body);
     taskList = res;
-    print("----------------- $res");*/
+    log("----------------- $res");*/
     hideLoadingDialog(context);
     if (response.statusCode == 200) {
       getAllTask();
@@ -261,14 +261,14 @@ class _HomeScreenState extends State<HomeScreen> {
         (route) => false,
       );
     } else {
-      print("Failed to load tasks");
+      log("Failed to load tasks");
     }
   }
 
   void updateTask({id, task, index}) async {
     log("=================start updateTask api call");
-    print("--------------$id");
-    print("--------------$task");
+    log("--------------$id");
+    log("--------------$task");
     showLoadingDialog(context);
     SharedPreferences preferences = await SharedPreferences.getInstance();
     var accessToken = preferences.getString("token");
@@ -278,11 +278,11 @@ class _HomeScreenState extends State<HomeScreen> {
         body: {"description": task, "status": "false", "timestamp": timestamp},
         headers: {"x-access-token": accessToken!});
     hideLoadingDialog(context);
-    print("update task Response status code == ${response.statusCode}");
-    print("update task Response body == ${response.body}");
+    log("update task Response status code == ${response.statusCode}");
+    log("update task Response body == ${response.body}");
     /*var res = jsonDecode(response.body);
     taskList = res;
-    print("----------------- $res");*/
+    log("----------------- $res");*/
     if (response.statusCode == 200) {
       getAllTask();
       // setState(() {});
@@ -296,7 +296,7 @@ class _HomeScreenState extends State<HomeScreen> {
         (route) => false,
       );
     } else {
-      print("Failed to load tasks");
+      log("Failed to load tasks");
     }
   }
 
