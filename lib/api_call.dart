@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -24,50 +25,50 @@ class _ApiCallDemoState extends State<ApiCallDemo> {
             itemCount: dataList.length,
             itemBuilder: (context, index) => Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text("${index} ${dataList[index]['description']}"),
+              child: Text("$index ${dataList[index]['description']}"),
             ),
           )),
           ElevatedButton(
               onPressed: () {
                 loginApi();
               },
-              child: Text("Login")),
+              child: const Text("Login")),
           ElevatedButton(
               onPressed: () {
                 signUpApi();
               },
-              child: Text("Signup")),
+              child: const Text("Signup")),
           ElevatedButton(
               onPressed: () {
                 getAllTask();
               },
-              child: Text("getAllTask")),
+              child: const Text("getAllTask")),
           ElevatedButton(
               onPressed: () {
                 addTask();
               },
-              child: Text("add task")),
+              child: const Text("add task")),
           ElevatedButton(
               onPressed: () {
                 addTask();
               },
-              child: Text("update task")),
+              child: const Text("update task")),
         ],
       ),
     );
   }
 
   void loginApi() async {
-    print("start login api call");
+    log("start login api call");
     http.Response response = await http.post(
         Uri.parse("https://todolist-1ldm.onrender.com/api/auth/signin"),
         body: {"username": "pranav02", "password": "demo@123"});
-    print("Response status code == ${response.statusCode}");
-    print("Response body == ${response.body}");
+    log("Response status code == ${response.statusCode}");
+    log("Response body == ${response.body}");
   }
 
   void signUpApi() async {
-    print("start signup api call");
+    log("start signup api call");
     http.Response response = await http.post(
         Uri.parse("https://todolist-1ldm.onrender.com/api/auth/signup"),
         body: {
@@ -75,30 +76,30 @@ class _ApiCallDemoState extends State<ApiCallDemo> {
           "email": "pranav02@gmail.com",
           "password": "demo@123"
         });
-    print("Response status code == ${response.statusCode}");
-    print("Response body == ${response.body}");
+    log("Response status code == ${response.statusCode}");
+    log("Response body == ${response.body}");
     if (response.statusCode == 200) {
       //success
     } else {
       //error
-      print("---  ${jsonDecode(response.body)['message']}");
+      log("---  ${jsonDecode(response.body)['message']}");
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${jsonDecode(response.body)['message']}")));
     }
   }
 
   void getAllTask() async {
-    print("start getAllTask api call");
+    log("start getAllTask api call");
     http.Response response = await http.get(
         Uri.parse("https://todolist-1ldm.onrender.com/api/tasks/"),
         headers: {
           "x-access-token":
               "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImMxOWFmZDY0LTU0MTktNDU3Yi1hYzlmLTkwYzNkOTk1MGY3MiIsImlhdCI6MTcyMjQwMzUzMSwiZXhwIjoxNzIyNDg5OTMxfQ.VEMV_x16QOF_ge-OoPVwopRpz2HFx1jF5QZI-nfahRE"
         });
-    print("getAllTask Response status code == ${response.statusCode}");
-    print("getAllTask Response body == ${response.body}");
+    log("getAllTask Response status code == ${response.statusCode}");
+    log("getAllTask Response body == ${response.body}");
     if (response.statusCode == 200) {
       //success
-      print("new valuye  -- ${jsonDecode(response.body)[0]['description']}");
+      log("new valuye  -- ${jsonDecode(response.body)[0]['description']}");
       dataList = jsonDecode(response.body);
       setState(() {});
     } else {
@@ -107,7 +108,7 @@ class _ApiCallDemoState extends State<ApiCallDemo> {
   }
 
   void addTask() async {
-    print("start getAllTask api call");
+    log("start getAllTask api call");
     http.Response response = await http.post(
         Uri.parse("https://todolist-1ldm.onrender.com/api/tasks/"),
         headers: {
@@ -118,8 +119,8 @@ class _ApiCallDemoState extends State<ApiCallDemo> {
           "description": "task num 4",
           "status": "false"
         });
-    print("getAllTask Response status code == ${response.statusCode}");
-    print("getAllTask Response body == ${response.body}");
+    log("getAllTask Response status code == ${response.statusCode}");
+    log("getAllTask Response body == ${response.body}");
     if (response.statusCode == 200) {
       //success
       getAllTask();
@@ -129,7 +130,7 @@ class _ApiCallDemoState extends State<ApiCallDemo> {
   }
 
   void updateTask() async {
-    print("start getAllTask api call");
+    log("start getAllTask api call");
     http.Response response = await http.post(
         Uri.parse("https://todolist-1ldm.onrender.com/api/tasks/"),
         headers: {
@@ -140,8 +141,8 @@ class _ApiCallDemoState extends State<ApiCallDemo> {
           "description": "task num 4",
           "status": "false"
         });
-    print("getAllTask Response status code == ${response.statusCode}");
-    print("getAllTask Response body == ${response.body}");
+    log("getAllTask Response status code == ${response.statusCode}");
+    log("getAllTask Response body == ${response.body}");
     if (response.statusCode == 200) {
       //success
       getAllTask();

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -16,7 +18,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController confirmPasswordController = TextEditingController();
 
   Future<void> signUp() async {
-    print("start login api call");
+    log("start login api call");
     http.Response response = await http.post(
         Uri.parse("https://todolist-1ldm.onrender.com/api/auth/signup"),
         body: {
@@ -25,8 +27,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
           "confirmPassword": confirmPasswordController.text,
           "email": emailController.text
         });
-    print("Response status code == ${response.statusCode}");
-    print("Response body == ${response.body}");
+    log("Response status code == ${response.statusCode}");
+    log("Response body == ${response.body}");
     if (response.statusCode == 200) {
       Navigator.pop(context);
     } else {

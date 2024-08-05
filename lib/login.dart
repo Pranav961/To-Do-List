@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -210,16 +211,16 @@ class _LoginScreenState extends State<LoginScreen> {
       );
       return;
     }
-    print("start login api call");
+    log("start login api call");
     http.Response response = await http.post(
         Uri.parse("https://todolist-1ldm.onrender.com/api/auth/signin"),
         body: {
           "username": usernameController.text,
           "password": passwordController.text
         });
-    print("Response status code == ${response.statusCode}");
-    print("Response body == ${response.body}");
-    print("Login access token : ${jsonDecode(response.body)["accessToken"]}");
+    log("Response status code == ${response.statusCode}");
+    log("Response body == ${response.body}");
+    log("Login access token : ${jsonDecode(response.body)["accessToken"]}");
     if (response.statusCode == 200) {
       preferences.setString("token", jsonDecode(response.body)["accessToken"]);
       Navigator.pushAndRemoveUntil(

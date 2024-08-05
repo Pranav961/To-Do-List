@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:todo/api_call.dart';
-import 'package:todo/home.dart';
 import 'package:todo/splash_screen.dart';
 
 void main() async {
