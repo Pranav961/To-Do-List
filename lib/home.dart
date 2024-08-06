@@ -10,7 +10,6 @@ import 'package:todo/loader.dart';
 import 'package:todo/login.dart';
 import 'package:todo/task_modal.dart';
 
-
 String url = "https://todolist-1ldm.onrender.com";
 
 class HomeScreen extends StatefulWidget {
@@ -60,8 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               TextButton(
                                 child: const Text('No'),
                                 onPressed: () {
-                                  Navigator.pop(
-                                      dialogContext);
+                                  Navigator.pop(dialogContext);
                                 },
                               ),
                               TextButton(
@@ -417,8 +415,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget falseTask(index) {
-    String timestamp =
-        taskList[index]['createdAt'] ?? DateTime.now().toIso8601String();
+    String timestamp = taskModalData[index].createdAt?.toIso8601String() ??
+        DateTime.now().toIso8601String();
     return GestureDetector(
       onTap: () {
         setState(() {
