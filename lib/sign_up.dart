@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:todo/loader.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -18,6 +20,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   TextEditingController confirmPasswordController = TextEditingController();
 
   Future<void> signUp() async {
+    setState(() {
+      showLoadingDialog(context);
+    });
     log("start login api call");
     http.Response response = await http.post(
         Uri.parse("https://todolist-1ldm.onrender.com/api/auth/signup"),
@@ -29,11 +34,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
         });
     log("Response status code == ${response.statusCode}");
     log("Response body == ${response.body}");
+    var res = jsonDecode(response.body);
+    hideLoadingDialog(context);
     if (response.statusCode == 200) {
       Navigator.pop(context);
     } else {
       final snackBar = SnackBar(
-        content: Text("Error: ${response.body}"),
+        content: Text(res['message']),
         duration: const Duration(seconds: 3),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -142,7 +149,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 if (passwordController.text != confirmPasswordController.text) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text("Passwords do not match"),
+                      content: Text("Confirm Password do not match"),
                     ),
                   );
                   return;

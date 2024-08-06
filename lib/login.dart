@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todo/home.dart';
+import 'package:todo/loader.dart';
 import 'package:todo/sign_up.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -202,6 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void loginApi() async {
+    showLoadingDialog(context);
     SharedPreferences preferences = await SharedPreferences.getInstance();
     if (usernameController.text.isEmpty || passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -221,6 +223,7 @@ class _LoginScreenState extends State<LoginScreen> {
     log("Response status code == ${response.statusCode}");
     log("Response body == ${response.body}");
     log("Login access token : ${jsonDecode(response.body)["accessToken"]}");
+    hideLoadingDialog(context);
     if (response.statusCode == 200) {
       preferences.setString("token", jsonDecode(response.body)["accessToken"]);
       Navigator.pushAndRemoveUntil(

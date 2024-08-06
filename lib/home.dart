@@ -375,13 +375,15 @@ class _HomeScreenState extends State<HomeScreen> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                taskModalData[index].description ?? "task",
-                // taskList[index]["description"] ?? "task",
-                style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white),
+              Expanded(
+                child: Text(
+                  taskModalData[index].description ?? "task",
+                  // taskList[index]["description"] ?? "task",
+                  style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 25),
@@ -483,12 +485,14 @@ class _HomeScreenState extends State<HomeScreen> {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  taskModalData[index].description ?? "task",
-                  style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white),
+                Expanded(
+                  child: Text(
+                    taskModalData[index].description ?? "task",
+                    style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 25),
