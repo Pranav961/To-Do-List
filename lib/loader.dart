@@ -4,7 +4,7 @@ void showLoadingDialog(context) {
   showDialog(
     context: context,
     builder: (context) => const Center(
-      child: CircularProgressIndicator(),
+      child: CircularProgressIndicator(backgroundColor: Colors.white,color: Color(0xFF0192ED)),
     ),
   );
 }
