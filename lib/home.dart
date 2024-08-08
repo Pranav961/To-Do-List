@@ -113,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         body: TabBarView(
           children: [
-            ListView.builder(
+            /*ListView.builder(
               itemCount: taskModalData.length,
               // itemCount: taskList.length,
               itemBuilder: (context, index) {
@@ -146,6 +146,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   return const SizedBox();
                 }
               },
+            ),*/
+            buildTaskListView(taskModalData, (index) => trueTask(index)),
+            buildTaskListView(
+              taskModalData.where((task) => task.status == false).toList(),
+                  (index) => falseTask(index),
+            ),
+            buildTaskListView(
+              taskModalData.where((task) => task.status == true).toList(),
+                  (index) => trueTask(index),
             ),
           ],
         ),
@@ -156,6 +165,24 @@ class _HomeScreenState extends State<HomeScreen> {
           child: const Icon(Icons.add),
         ),
       ),
+    );
+  }
+  Widget buildTaskListView(List<TaskModal> tasks, Widget Function(int) itemBuilder) {
+    if (tasks.isEmpty) {
+      return const Center(
+        child: Text(
+          'No data found',
+          style: TextStyle(fontSize: 18, color: Colors.grey),
+        ),
+      );
+    }
+
+    return ListView.builder(
+      itemCount: tasks.length,
+      itemBuilder: (context, index) {
+        if (index >= tasks.length) return const SizedBox();
+        return itemBuilder(index);
+      },
     );
   }
 
@@ -177,6 +204,10 @@ class _HomeScreenState extends State<HomeScreen> {
       final taskModal = taskModalFromJson(response.body);
       taskModalData = taskModal;
       setState(() {});
+      /*List<dynamic> tasks = jsonDecode(response.body);
+      setState(() {
+        taskModalData = tasks.map((task) => TaskModal.fromJson(task)).toList();
+      });*/
     } else if (response.statusCode == 401) {
       preferences.clear();
       Navigator.pushAndRemoveUntil(
@@ -214,8 +245,6 @@ class _HomeScreenState extends State<HomeScreen> {
     if (response.statusCode == 200) {
       getAllTask();
       setState(() {});
-      // taskList.add(
-      //     newTask); // Directly add the new task from the response to the state
     } else if (response.statusCode == 401) {
       preferences.clear();
       Navigator.pushAndRemoveUntil(
@@ -263,7 +292,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void updateTask({id, task, index}) async {
+  void updateTask({id, task, index, status}) async {
     log("=================start updateTask api call");
     log("--------------$id");
     log("--------------$task");
@@ -273,7 +302,7 @@ class _HomeScreenState extends State<HomeScreen> {
     String timestamp = DateTime.now().toIso8601String();
 
     http.Response response = await http.put(Uri.parse("$url/api/tasks/$id"),
-        body: {"description": task, "status": "false", "timestamp": timestamp},
+        body: {"description": task, "status": "true", "timestamp": timestamp},
         headers: {"x-access-token": accessToken!});
     hideLoadingDialog(context);
     log("update task Response status code == ${response.statusCode}");
@@ -309,10 +338,11 @@ class _HomeScreenState extends State<HomeScreen> {
             if (index == null) {
               addTask(v['description']);
             } else {
-              updateTask(id: data!['id'], task: v['description']);
+              updateTask(
+                  id: data!['id'], task: v['description'], status: v['status']);
             }
 
-            Navigator.pop(context);
+            // Navigator.pop(context);
           },
         );
       },
@@ -401,15 +431,23 @@ class _HomeScreenState extends State<HomeScreen> {
             activeColor: Colors.white,
             value: taskModalData[index].status,
             onChanged: (value) {
-              if (value == true) {
+              /*if (value == true) {
                 setState(() {
                   taskModalData[index].status = value;
                 });
-              }
+              }*/
+              setState(() {
+                taskModalData[index].status = value!;
+                updateTask(
+                    id: taskModalData[index].id,
+                    task: taskModalData[index].description,
+                    status: value);
+              });
             },
           ),
           onTap: () {
-            showForm(data: taskList[index], index: index);
+            // showForm(data: taskList[index], index: index);
+            showForm(data: taskModalData[index].toJson(), index: index);
           },
         ),
       ),
@@ -423,9 +461,9 @@ class _HomeScreenState extends State<HomeScreen> {
       onTap: () {
         setState(() {
           updateTask(
-            id: taskModalData[index].id,
-            task: taskModalData[index].description,
-          );
+              id: taskModalData[index].id,
+              task: taskModalData[index].description,
+              status: true);
         });
       },
       child: Card(
@@ -509,16 +547,24 @@ class _HomeScreenState extends State<HomeScreen> {
               activeColor: Colors.white,
               value: taskModalData[index].status,
               onChanged: (value) {
-                setState(() {
+                /*setState(() {
                   taskModalData[index].status = value;
+                });*/
+                setState(() {
+                  taskModalData[index].status = value!;
+                  updateTask(
+                      id: taskModalData[index].id,
+                      task: taskModalData[index].description,
+                      status: value);
                 });
               },
             ),
             onTap: () {
-              showForm(
-                  /*data: user, index: index*/
+              /*showForm(
+                  */ /*data: user, index: index*/ /*
                   data: taskList[index],
-                  index: index);
+                  index: index);*/
+              showForm(data: taskModalData[index].toJson(), index: index);
             },
           ),
         ),
@@ -608,6 +654,7 @@ class _AddEditDialogState extends State<AddEditDialog> {
                     ElevatedButton(
                       onPressed: () {
                         if (formKey.currentState!.validate()) {
+                          Navigator.pop(context);
                           widget.onTap!({
                             "description": taskController.text,
                             "status": value
